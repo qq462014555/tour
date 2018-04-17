@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+<head>
+ <meta charset="utf-8"/>
+ <title>后台登录</title>
+ <style>
+     *{box-sizing: border-box}
+     body{font-family:"Microsoft YaHei";}
+     body, button,input,optgroup,select,textarea,p{margin:0}
+     button,html input[type=button],input[type=reset],input[type=submit]{-webkit-appearance:button;cursor:pointer}
+     input,select,button{outline:none;}
+     a{color:#999;text-decoration:none;outline:0  font-size: 16px;}
+     img{vertical-align:middle;border:0}
+     ul{margin:0px;padding:0px;list-style-type:none;}
+     .admin_login{margin-left:750px;border:1px solid #ddd;border-top:4px solid #feaa00; width: 500px;padding:50px;}
+     .tittle p{font-size: 26px;position: relative;padding-left: 20px}
+     .tittle>p:before{content: "";position: absolute;left:0;top:0 ;width:8px; height:35px;background: #feaa00}
+     .admin_login li{margin:42px 0;}
+     .admin_login  input{padding-left: 50px; font-size:20px;height:48px;line-height:26px;border:1px solid #ddd;border-radius: 5px;width:400px;}
+     .user_icon input{background:url("manager/images/user_hui.jpg") no-repeat 10px 10px ;}
+     .pwd_icon input{background:url("manager/images/pwd_hui.jpg") no-repeat 10px 10px ;}
+     .user_icon input:focus{background-image:url("manager/images/user.jpg");border-color: #feaa00}
+     .pwd_icon input:focus{background-image:url("manager/images/pwd.jpg");border-color:#feaa00}
+     .admin_login  .submit_btn{background: #feaa00;color: #ffffff;font-weight:bold;padding: 0}
+     .admin_login  .submit_btn:hover{background: #feaa00;}
+     .login_box{width:1300px; margin:0px auto;padding: 50px;margin-top:80px;background:url("manager/images/login-bg.jpg") no-repeat  10px 50px ;}
+     footer{width: 100%;position: absolute;bottom:5px;text-align: center;font-size: 14px;color:#999;}
+     header{ width: 100%;height:70px; background:#feaa00;font-size: 40px;color: #FFFFFF;padding-left: 300px;}
+     img{ margin-right: 20px; }
+     header p{line-height: 70px;}
+ </style>
+</head>
+<body>
+<header>
+    <p>后台管理系统</p>
+</header>
+<div class="login_box">
+    <div class="admin_login">
+        <div class="tittle">
+            <p><span></span>管理员登录</p>
+        </div>
+        <ul>
+            <li  class="user_icon"><input type="text" name='acc' placeholder="请输入帐号"  /></li>
+			<li  class="pwd_icon"><input type="password" name='pwd' placeholder="请输入密码"/></li>
+			<li><input id="ready" type="button" value="立即登录" class="submit_btn"/></li>
+        </ul>
+    </div>
+</div>
+<footer>
+    <p>技术支持：深圳唐龙飞讯科技有限公司 <a  href="http://www.tlongx.com" target="_blank"> www.tlongx.com</a></p>
+</footer>
+<script src="manager/js/jquery-3.1.1.min.js"></script>
+<script>
+    $(document).ready(function(){
+        $(".admin_login").keydown(function(e){
+            var curKey = e.which;
+            if(curKey == 13){
+                $("#ready").click();
+                return false;
+            }
+        });
+    });
+    $("#ready").click(function(){
+       var acc=$("[name='acc']").val();
+        var usdata={loginName:acc,pwd:$("[name='pwd']").val()};
+        usdata='jsonString='+JSON.stringify(usdata);
+        console.log(usdata);
+        $.ajax({
+           url: './admin/login.do',
+           type: 'POST',
+           data:usdata ,
+           dataType:'json',
+       
+      
+           success: function (returndata){
+               console.log(returndata);
+               if(returndata.status=="0"){
+                    var status=returndata.status;
+                    /*  var id=returndata.data. manager_id;
+                   window.sessionStorage.setItem("MANAGER_ID",id);
+                   window.sessionStorage.setItem("ROLE",role);
+                   window.sessionStorage.setItem("ACCOUNT",acc); */
+                   if(status==1){window.location.href="manager/index.html";}else{
+                	   window.location.href="orderManager/index.html";
+                   }
+                   
+               }else if(returndata.status==10003){
+                    alert("帐号或密码输入错误，请重新输入！");
+               }else{
+                    // alert(returndata.info);
+               }
+            },
+           error: function (returndata) {
+               alert("服务器返回错误请刷新重试！");
+               console.log(returndata);
+           }
+        });
+    });
+</script>
+</body>
+</html>

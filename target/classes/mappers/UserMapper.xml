@@ -1,0 +1,323 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.tlongx.dao.UserMapper" >
+  <resultMap id="BaseResultMap" type="com.tlongx.pojo.User" >
+    <constructor >
+      <idArg column="uid" jdbcType="BIGINT" javaType="java.lang.Long" />
+      <arg column="login_name" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="admin_name" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="password" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="status" jdbcType="BIT" javaType="java.lang.Boolean" />
+      <arg column="sex" jdbcType="INTEGER" javaType="java.lang.Integer" />
+      <arg column="age" jdbcType="INTEGER" javaType="java.lang.Integer" />
+      <arg column="phone" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="email" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="role" jdbcType="BIT" javaType="java.lang.Boolean" />
+      <arg column="address" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="validataCode" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="register_out_time" jdbcType="TIMESTAMP" javaType="java.util.Date" />
+      <arg column="create_time" jdbcType="TIMESTAMP" javaType="java.util.Date" />
+      <arg column="update_time" jdbcType="TIMESTAMP" javaType="java.util.Date" />
+    </constructor>
+  </resultMap>
+  <resultMap id="ResultMapWithBLOBs" type="com.tlongx.pojo.User" >
+    <constructor >
+      <idArg column="uid" jdbcType="BIGINT" javaType="java.lang.Long" />
+      <arg column="login_name" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="admin_name" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="password" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="status" jdbcType="BIT" javaType="java.lang.Boolean" />
+      <arg column="sex" jdbcType="INTEGER" javaType="java.lang.Integer" />
+      <arg column="age" jdbcType="INTEGER" javaType="java.lang.Integer" />
+      <arg column="phone" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="email" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="role" jdbcType="BIT" javaType="java.lang.Boolean" />
+      <arg column="address" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="validataCode" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="register_out_time" jdbcType="TIMESTAMP" javaType="java.util.Date" />
+      <arg column="create_time" jdbcType="TIMESTAMP" javaType="java.util.Date" />
+      <arg column="update_time" jdbcType="TIMESTAMP" javaType="java.util.Date" />
+      <arg column="sub_images" jdbcType="LONGVARCHAR" javaType="java.lang.String" />
+    </constructor>
+  </resultMap>
+  <sql id="Base_Column_List" >
+    uid, login_name, admin_name, password, status, sex, age, phone, email, role, address, 
+    validataCode, register_out_time, create_time, update_time
+  </sql>
+  <sql id="Blob_Column_List" >
+    sub_images
+  </sql>
+   	<!-- 邮箱是否已存在 -->
+   	<select id="selectCheckEmail" resultType="int" parameterType="string">
+   		select count(1)
+   		from t_user
+   		where email=#{email}
+
+   	</select>
+   	
+    	<!-- 昵称是否已存在 -->
+   	 	<select id="selectCheckLoginName" resultType="int" parameterType="string">
+   		select count(1)
+   		from t_user
+   		where login_name=#{loginName}
+   	
+   	</select>
+  
+ 	<!-- 昵称密码登陆 -->
+   	 	<select id="selectByLoginNameAndPwd" resultMap="ResultMapWithBLOBs" parameterType="map">
+   		select 
+   		 <include refid="Base_Column_List" />,
+   		  <include refid="Blob_Column_List" />
+ 
+   		from t_user
+   		where login_name=#{loginName}
+   		and password=#{password}
+   	
+   	</select>
+   
+
+   	<select id="selectByEmailAndPwd" resultMap="ResultMapWithBLOBs" parameterType="map">
+   		select 
+   		 <include refid="Base_Column_List" />,
+   		  <include refid="Blob_Column_List" />
+ 
+   		from t_user
+   		where email=#{email}
+   		and password=#{password}
+   	
+   	</select>
+   	
+   	<update id="updateByEmail"  parameterType="com.tlongx.pojo.User" >
+   		  update t_user
+  
+      password = #{password,jdbcType=VARCHAR},
+ 
+      update_time = now(),
+ 
+    where email = #{email,jdbcType=BIGINT}
+   	</update>
+ 
+   	
+   	
+   	
+  
+   	
+ 
+  
+  <select id="selectByPrimaryKey" resultMap="ResultMapWithBLOBs" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from t_user
+    where uid = #{uid,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from t_user
+    where uid = #{uid,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.tlongx.pojo.User" >
+    insert into t_user (uid, login_name, admin_name, 
+      password, status, sex, 
+      age, phone, email, 
+      role, address, validataCode, 
+      register_out_time, create_time, update_time, 
+      sub_images)
+    values (#{uid,jdbcType=BIGINT}, #{loginName,jdbcType=VARCHAR}, #{adminName,jdbcType=VARCHAR}, 
+      #{password,jdbcType=VARCHAR}, #{status,jdbcType=BIT}, #{sex,jdbcType=INTEGER}, 
+      #{age,jdbcType=INTEGER}, #{phone,jdbcType=VARCHAR}, #{email,jdbcType=VARCHAR}, 
+      #{role,jdbcType=BIT}, #{address,jdbcType=VARCHAR}, #{validatacode,jdbcType=VARCHAR}, 
+      #{registerOutTime,jdbcType=TIMESTAMP}, now(), #{updateTime,jdbcType=TIMESTAMP}, 
+      #{subImages,jdbcType=LONGVARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.tlongx.pojo.User" >
+    insert into t_user
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="uid != null" >
+        uid,
+      </if>
+      <if test="loginName != null" >
+        login_name,
+      </if>
+      <if test="adminName != null" >
+        admin_name,
+      </if>
+      <if test="password != null" >
+        password,
+      </if>
+      <if test="status != null" >
+        status,
+      </if>
+      <if test="sex != null" >
+        sex,
+      </if>
+      <if test="age != null" >
+        age,
+      </if>
+      <if test="phone != null" >
+        phone,
+      </if>
+      <if test="email != null" >
+        email,
+      </if>
+      <if test="role != null" >
+        role,
+      </if>
+      <if test="address != null" >
+        address,
+      </if>
+      <if test="validatacode != null" >
+        validataCode,
+      </if>
+      <if test="registerOutTime != null" >
+        register_out_time,
+      </if>
+        create_time,
+   
+      <if test="updateTime != null" >
+        update_time,
+      </if>
+      <if test="subImages != null" >
+        sub_images,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="uid != null" >
+        #{uid,jdbcType=BIGINT},
+      </if>
+      <if test="loginName != null" >
+        #{loginName,jdbcType=VARCHAR},
+      </if>
+      <if test="adminName != null" >
+        #{adminName,jdbcType=VARCHAR},
+      </if>
+      <if test="password != null" >
+        #{password,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null" >
+        #{status,jdbcType=BIT},
+      </if>
+      <if test="sex != null" >
+        #{sex,jdbcType=INTEGER},
+      </if>
+      <if test="age != null" >
+        #{age,jdbcType=INTEGER},
+      </if>
+      <if test="phone != null" >
+        #{phone,jdbcType=VARCHAR},
+      </if>
+      <if test="email != null" >
+        #{email,jdbcType=VARCHAR},
+      </if>
+      <if test="role != null" >
+        #{role,jdbcType=BIT},
+      </if>
+      <if test="address != null" >
+        #{address,jdbcType=VARCHAR},
+      </if>
+      <if test="validatacode != null" >
+        #{validatacode,jdbcType=VARCHAR},
+      </if>
+      <if test="registerOutTime != null" >
+        #{registerOutTime,jdbcType=TIMESTAMP},
+      </if>
+      
+       now(),
+    
+      <if test="updateTime != null" >
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="subImages != null" >
+        #{subImages,jdbcType=LONGVARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.tlongx.pojo.User" >
+    update t_user
+    <set >
+      <if test="loginName != null" >
+        login_name = #{loginName,jdbcType=VARCHAR},
+      </if>
+      <if test="adminName != null" >
+        admin_name = #{adminName,jdbcType=VARCHAR},
+      </if>
+      <if test="password != null" >
+        password = #{password,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null" >
+        status = #{status,jdbcType=BIT},
+      </if>
+      <if test="sex != null" >
+        sex = #{sex,jdbcType=INTEGER},
+      </if>
+      <if test="age != null" >
+        age = #{age,jdbcType=INTEGER},
+      </if>
+      <if test="phone != null" >
+        phone = #{phone,jdbcType=VARCHAR},
+      </if>
+      <if test="email != null" >
+        email = #{email,jdbcType=VARCHAR},
+      </if>
+      <if test="role != null" >
+        role = #{role,jdbcType=BIT},
+      </if>
+      <if test="address != null" >
+        address = #{address,jdbcType=VARCHAR},
+      </if>
+      <if test="validatacode != null" >
+        validataCode = #{validatacode,jdbcType=VARCHAR},
+      </if>
+      <if test="registerOutTime != null" >
+        register_out_time = #{registerOutTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createTime != null" >
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null" >
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="subImages != null" >
+        sub_images = #{subImages,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    where uid = #{uid,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.tlongx.pojo.User" >
+    update t_user
+    set login_name = #{loginName,jdbcType=VARCHAR},
+      admin_name = #{adminName,jdbcType=VARCHAR},
+      password = #{password,jdbcType=VARCHAR},
+      status = #{status,jdbcType=BIT},
+      sex = #{sex,jdbcType=INTEGER},
+      age = #{age,jdbcType=INTEGER},
+      phone = #{phone,jdbcType=VARCHAR},
+      email = #{email,jdbcType=VARCHAR},
+      role = #{role,jdbcType=BIT},
+      address = #{address,jdbcType=VARCHAR},
+      validataCode = #{validatacode,jdbcType=VARCHAR},
+      register_out_time = #{registerOutTime,jdbcType=TIMESTAMP},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      sub_images = #{subImages,jdbcType=LONGVARCHAR}
+    where uid = #{uid,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.tlongx.pojo.User" >
+    update t_user
+    set login_name = #{loginName,jdbcType=VARCHAR},
+      admin_name = #{adminName,jdbcType=VARCHAR},
+      password = #{password,jdbcType=VARCHAR},
+      status = #{status,jdbcType=BIT},
+      sex = #{sex,jdbcType=INTEGER},
+      age = #{age,jdbcType=INTEGER},
+      phone = #{phone,jdbcType=VARCHAR},
+      email = #{email,jdbcType=VARCHAR},
+      role = #{role,jdbcType=BIT},
+      address = #{address,jdbcType=VARCHAR},
+      validataCode = #{validatacode,jdbcType=VARCHAR},
+      register_out_time = #{registerOutTime,jdbcType=TIMESTAMP},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_time = #{updateTime,jdbcType=TIMESTAMP}
+    where uid = #{uid,jdbcType=BIGINT}
+  </update>
+</mapper>
